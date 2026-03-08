@@ -6,10 +6,10 @@
 -- ============================================================
 --  站点配置（更新为完整内容）
 -- ============================================================
-UPDATE `blog_site_config` SET `config_val` = 'Dear Blog'           WHERE `config_key` = 'site_name';
-UPDATE `blog_site_config` SET `config_val` = '技术与生活的交汇处'    WHERE `config_key` = 'site_tagline';
+UPDATE `blog_site_config` SET `config_val` = 'TH'           WHERE `config_key` = 'site_name';
+UPDATE `blog_site_config` SET `config_val` = 'DEAR'    WHERE `config_key` = 'site_tagline';
 UPDATE `blog_site_config` SET `config_val` = '2024'                 WHERE `config_key` = 'site_since';
-UPDATE `blog_site_config` SET `config_val` = '北京'                 WHERE `config_key` = 'site_location';
+UPDATE `blog_site_config` SET `config_val` = 'SHANGHAI'                 WHERE `config_key` = 'site_location';
 UPDATE `blog_site_config` SET `config_val` = 'https://github.com/dearblog' WHERE `config_key` = 'github_url';
 UPDATE `blog_site_config` SET `config_val` = 'hi@dearblog.dev'      WHERE `config_key` = 'email';
 UPDATE `blog_site_config` SET `config_val` = '## 关于我
@@ -1166,37 +1166,37 @@ VALUES
 (
     'P01', 'Dear Blog', 'Blog',
     '这个博客本身。从零搭建的个人博客系统，前后端分离，Portal 使用 VitePress 静态生成，Admin 使用 Vue 3，后端 Spring Boot 3。',
-    ''["Vue 3", "VitePress", "Spring Boot", "MySQL", "Redis"]'',
-    ''["前后端分离架构", "JWT 无状态认证", "自定义 VitePress 主题", "Flyway 数据库版本管理"]'',
-    ''2024'', ''Active'', 200, ''https://github.com/dearblog/dear-blog'', 1
+    '["Vue 3", "VitePress", "Spring Boot", "MySQL", "Redis"]',
+    '["前后端分离架构", "JWT 无状态认证", "自定义 VitePress 主题", "Flyway 数据库版本管理"]',
+    '2024', 'Active', 200, 'https://github.com/dearblog/dear-blog', 1
 ),
 (
     'P02', 'Mini Kanban', 'Kanban',
     '轻量级看板工具，专注于个人任务管理。无账号系统，数据存储在本地 IndexedDB，零后端依赖。',
-    ''["Vue 3", "TypeScript", "Vite", "IndexedDB"]'',
-    ''["纯前端无后端", "拖拽排序", "本地数据持久化", "PWA 支持离线使用"]'',
-    ''2024'', ''Active'', 145, ''https://github.com/dearblog/mini-kanban'', 2
+    '["Vue 3", "TypeScript", "Vite", "IndexedDB"]',
+    '["纯前端无后端", "拖拽排序", "本地数据持久化", "PWA 支持离线使用"]',
+    '2024', 'Active', 145, 'https://github.com/dearblog/mini-kanban', 2
 ),
 (
     'P03', 'Flux CLI', 'Flux',
     '命令行效率工具集合，包含代码片段管理、API 测试、JSON 格式化等常用功能，用 Rust 编写。',
-    ''["Rust", "Clap", "Tokio", "Serde"]'',
-    ''["单二进制文件", "跨平台", "极低内存占用", "插件化架构"]'',
-    ''2023'', ''WIP'', 30, ''https://github.com/dearblog/flux-cli'', 3
+    '["Rust", "Clap", "Tokio", "Serde"]',
+    '["单二进制文件", "跨平台", "极低内存占用", "插件化架构"]',
+    '2023', 'WIP', 30, 'https://github.com/dearblog/flux-cli', 3
 ),
 (
     'P04', 'Spring Boot Starter Kit', 'Starter',
     '个人 Spring Boot 项目模板，集成了常用的配置和工具，一键生成符合规范的项目结构，减少重复搭建成本。',
-    ''["Java", "Spring Boot 3", "MyBatis Plus", "Flyway", "SpringDoc"]'',
-    ''["统一响应格式", "全局异常处理", "JWT 认证集成", "Docker 部署模板"]'',
-    ''2023'', ''Archive'', 280, ''https://github.com/dearblog/springboot-starter'', 4
+    '["Java", "Spring Boot 3", "MyBatis Plus", "Flyway", "SpringDoc"]',
+    '["统一响应格式", "全局异常处理", "JWT 认证集成", "Docker 部署模板"]',
+    '2023', 'Archive', 280, 'https://github.com/dearblog/springboot-starter', 4
 ),
 (
     'P05', 'Note Sync', 'Sync',
     '多设备笔记同步工具，使用 WebDAV 协议将 Markdown 笔记同步到任意支持 WebDAV 的存储后端（如 Nextcloud）。',
-    ''["TypeScript", "Node.js", "WebDAV", "Electron"]'',
-    ''["端到端加密", "冲突自动合并", "支持 Obsidian 目录结构", "跨平台桌面客户端"]'',
-    ''2024'', ''WIP'', 60, ''https://github.com/dearblog/note-sync'', 5
+    '["TypeScript", "Node.js", "WebDAV", "Electron"]',
+    '["端到端加密", "冲突自动合并", "支持 Obsidian 目录结构", "跨平台桌面客户端"]',
+    '2024', 'WIP', 60, 'https://github.com/dearblog/note-sync', 5
 );
 
 -- ============================================================
