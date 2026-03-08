@@ -30,6 +30,7 @@ spring:
     locations: classpath:db/migration
     baseline-on-migrate: true
     validate-on-migrate: true
+    placeholder-replacement: false   # 禁用占位符替换，避免 SQL 中的 ${...} 被误解析
 
   # ── 文件上传大小限制 ──────────────────────────────────────
   servlet:
