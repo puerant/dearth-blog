@@ -1,0 +1,30 @@
+# ── Stage 1: Maven 构建 ────────────────────────────────────────────
+FROM maven:3.9-eclipse-temurin-17-alpine AS builder
+WORKDIR /build
+
+# 先复制所有 pom.xml，利用 Docker 层缓存加速依赖下载
+COPY backend/pom.xml ./
+COPY backend/blog-common/pom.xml blog-common/
+COPY backend/blog-app/pom.xml blog-app/
+RUN mvn dependency:go-offline -q --no-transfer-progress 2>/dev/null || true
+
+# 复制源代码并构建
+COPY backend/ .
+RUN mvn clean package -DskipTests --no-transfer-progress
+
+# ── Stage 2: JRE 运行时 ───────────────────────────────────────────
+FROM eclipse-temurin:17-jre-alpine
+WORKDIR /app
+
+# 创建非 root 用户
+RUN addgroup -S appgroup && adduser -S appuser -G appgroup
+
+# 复制 JAR（通配符匹配版本号）
+COPY --from=builder /build/blog-app/target/blog-app-*.jar app.jar
+
+# 上传目录
+RUN mkdir -p /app/uploads && chown appuser:appgroup /app/uploads
+
+USER appuser
+EXPOSE 8080
+ENTRYPOINT ["java", "-jar", "/app/app.jar"]

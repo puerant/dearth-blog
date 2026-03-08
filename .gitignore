@@ -37,6 +37,7 @@ dist/
 .env.*.local
 application-local.yml
 application-prod.yml
+deploy/.env
 
 # ── 上传文件 ─────────────────────────────────────────────────────
 backend/blog-app/uploads/

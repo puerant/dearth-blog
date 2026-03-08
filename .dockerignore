@@ -1,0 +1,23 @@
+# Git 版本控制
+.git/
+.gitignore
+
+# IDE
+.idea/
+*.iml
+
+# Node 依赖（各前端子项目）
+**/node_modules/
+
+# 构建产物
+**/target/
+**/.vitepress/dist/
+**/dist/
+**/build/
+
+# 测试截图
+*.png
+*.jpg
+
+# 敏感配置（不进入 Docker 构建上下文）
+deploy/.env

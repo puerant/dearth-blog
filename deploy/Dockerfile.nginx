@@ -1,0 +1,41 @@
+# ── Stage 1: 构建 Portal（VitePress SSG）────────────────────────────
+FROM node:20-alpine AS portal-builder
+WORKDIR /build/portal
+
+# 先复制 package.json 利用缓存
+COPY frontend/portal/package.json ./
+COPY frontend/portal/pnpm-lock.yaml* ./
+RUN npm install -g pnpm --quiet
+RUN pnpm install --frozen-lockfile
+
+# 复制源码并构建（后端不可用时 paths() 使用 __init__ 占位，Nginx 回退处理）
+COPY frontend/portal/ .
+RUN pnpm build
+
+# ── Stage 2: 构建 Admin（Vue 3 + Vite，base=/admin）──────────────────
+FROM node:20-alpine AS admin-builder
+WORKDIR /build/admin
+
+COPY frontend/admin/package.json ./
+COPY frontend/admin/pnpm-lock.yaml* ./
+RUN npm install -g pnpm --quiet
+RUN pnpm install --frozen-lockfile
+
+COPY frontend/admin/ .
+# VITE_BASE_URL 注入 vite.config.ts，使 admin 资源路径和路由 base 均为 /admin
+ENV VITE_BASE_URL=/admin
+RUN pnpm build
+
+# ── Stage 3: Nginx 静态服务 ───────────────────────────────────────
+FROM nginx:1.25-alpine
+
+# 清空默认页面
+RUN rm -rf /usr/share/nginx/html/*
+
+# Portal → 根目录
+COPY --from=portal-builder /build/portal/.vitepress/dist /usr/share/nginx/html
+
+# Admin → /admin 子目录
+COPY --from=admin-builder /build/admin/dist /usr/share/nginx/html/admin
+
+EXPOSE 80 443

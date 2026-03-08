@@ -6,6 +6,8 @@ import { ElementPlusResolver } from 'unplugin-vue-components/resolvers'
 import { fileURLToPath, URL } from 'node:url'
 
 export default defineConfig({
+  // 生产构建时由 Dockerfile 注入 VITE_BASE_URL=/admin，dev 模式默认 /
+  base: process.env.VITE_BASE_URL || '/',
   plugins: [
     vue(),
     AutoImport({
