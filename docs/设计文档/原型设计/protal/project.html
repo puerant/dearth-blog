@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>项目详情 — dear·blog</title>
+  <link rel="stylesheet" href="assets/style.css" />
+</head>
+<body>
+
+<nav class="site-nav">
+  <div class="container">
+    <a href="index.html" class="site-title">
+      <span class="site-logo">
+        <span class="site-logo-text">DEAR</span><sup class="site-logo-sup">th</sup>
+      </span>
+    </a>
+    <ul class="nav-links" id="nav-links">
+      <li><a href="index.html">文章</a></li>
+      <li><a href="categories.html">分类</a></li>
+      <li><a href="tags.html">标签</a></li>
+      <li><a href="archives.html">归档</a></li>
+      <li><a href="series.html">系列</a></li>
+      <li><a href="about.html">关于</a></li>
+    </ul>
+    <div class="nav-toggle" id="nav-toggle"><span></span><span></span><span></span></div>
+  </div>
+</nav>
+
+<div class="page-body">
+  <div class="container">
+
+    <!-- Breadcrumb -->
+    <div style="padding: 28px 0 0; font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.04em; color: var(--text-3);">
+      <a href="index.html" style="color:var(--text-3);text-decoration:none;transition:color .2s;"
+         onmouseover="this.style.color='var(--accent)'" onmouseout="this.style.color='var(--text-3)'">HOME</a>
+      <span style="margin:0 10px;opacity:.4;">/</span>
+      <a href="index.html#projects" style="color:var(--text-3);text-decoration:none;transition:color .2s;"
+         onmouseover="this.style.color='var(--accent)'" onmouseout="this.style.color='var(--text-3)'">PROJECTS</a>
+      <span style="margin:0 10px;opacity:.4;">/</span>
+      <span id="bread-id" style="color:var(--accent);"></span>
+    </div>
+
+    <!-- Project Header -->
+    <header class="project-hd" id="project-hd">
+      <div class="project-hd-eyebrow">
+        <span class="ph-id" id="ph-id"></span>
+        <span id="ph-status" class="pi-status"></span>
+        <span id="ph-year" class="pi-year"></span>
+      </div>
+      <h1 class="project-hd-name" id="ph-name"></h1>
+      <div class="project-color-bar" id="ph-color-bar"></div>
+      <p class="project-hd-desc" id="ph-desc"></p>
+      <div class="project-tech-row" id="ph-tech"></div>
+    </header>
+
+    <!-- Content layout -->
+    <div class="project-layout">
+
+      <!-- Main -->
+      <main>
+        <!-- Features -->
+        <section class="project-section">
+          <span class="project-section-label">// 核心特性</span>
+          <ul class="project-feature-list" id="feature-list"></ul>
+        </section>
+
+        <!-- Related Articles -->
+        <section class="project-section" id="related-section">
+          <span class="project-section-label">// 相关文章</span>
+          <div id="related-list"></div>
+        </section>
+      </main>
+
+      <!-- Sidebar -->
+      <aside>
+        <!-- Meta card -->
+        <div class="project-sidebar-card">
+          <span class="project-sidebar-card-label">项目信息</span>
+          <div class="project-meta-rows" id="meta-rows"></div>
+        </div>
+
+        <!-- Links card -->
+        <div class="project-sidebar-card">
+          <span class="project-sidebar-card-label">链接</span>
+          <a id="link-github" class="project-sidebar-link" href="#" target="_blank" rel="noopener">
+            <span>GitHub 仓库</span>
+            <span style="opacity:.5;">↗</span>
+          </a>
+        </div>
+
+        <!-- Other projects -->
+        <div class="project-sidebar-card" style="margin-top:4px;">
+          <span class="project-sidebar-card-label">全部项目</span>
+          <div id="all-projects-list"></div>
+        </div>
+      </aside>
+    </div>
+
+    <!-- Prev / Next project -->
+    <nav class="project-nav" id="project-nav"></nav>
+
+  </div>
+</div>
+
+<footer class="site-footer">
+  <div class="container">
+    <p class="footer-left">© <span id="footer-year"></span> dear·blog · 用心记录</p>
+    <div class="footer-links">
+      <a href="index.html">← 返回首页</a>
+    </div>
+  </div>
+</footer>
+
+<script src="assets/data.js"></script>
+<script>
+  document.getElementById('footer-year').textContent = new Date().getFullYear();
+
+  /* ── Resolve project from URL param ── */
+  const params  = new URLSearchParams(location.search);
+  const pid     = params.get('id') || PROJECTS[0].id;
+  const project = PROJECTS.find(p => p.id === pid) || PROJECTS[0];
+  const idx     = PROJECTS.findIndex(p => p.id === project.id);
+
+  /* ── Page title ── */
+  document.title = project.name + ' — dear·blog';
+
+  /* ── Accent color ── */
+  const hue    = project.hue;
+  const accent = `hsl(${hue}, 60%, 58%)`;
+  const accentBg = `hsla(${hue}, 55%, 50%, 0.08)`;
+
+  /* ── Breadcrumb ── */
+  document.getElementById('bread-id').textContent = project.id;
+
+  /* ── Header ── */
+  document.getElementById('ph-id').textContent   = project.id;
+  document.getElementById('ph-name').textContent = project.name;
+  document.getElementById('ph-desc').textContent = project.desc;
+  document.getElementById('ph-year').textContent = project.year;
+  document.getElementById('ph-color-bar').style.background = accent;
+
+  const statusEl = document.getElementById('ph-status');
+  statusEl.textContent   = project.status;
+  statusEl.style.color        = project.status === 'Active' ? '#6EC89A' :
+                                 project.status === 'WIP'    ? 'var(--accent)' : 'var(--text-3)';
+  statusEl.style.borderColor  = project.status === 'Active' ? 'rgba(110,200,154,0.35)' :
+                                 project.status === 'WIP'    ? 'rgba(200,169,110,0.35)' : 'var(--border-2)';
+
+  document.getElementById('ph-tech').innerHTML =
+    project.tech.map(t => `<span class="pi-tag" style="font-size:11px;padding:3px 9px;">${t}</span>`).join('');
+
+  /* ── Features ── */
+  document.getElementById('feature-list').innerHTML =
+    project.highlights.map(h => `
+      <li class="project-feature-item" style="--fi-color:${accent};">
+        <span style="color:${accent};font-family:var(--font-mono);flex-shrink:0;margin-top:1px;">—</span>
+        <span>${h}</span>
+      </li>
+    `).join('');
+
+  /* ── Meta sidebar ── */
+  document.getElementById('meta-rows').innerHTML = `
+    <div class="project-meta-row">
+      <span class="pm-key">状态</span>
+      <span class="pm-val" style="color:${statusEl.style.color};">${project.status}</span>
+    </div>
+    <div class="project-meta-row">
+      <span class="pm-key">年份</span>
+      <span class="pm-val">${project.year}</span>
+    </div>
+    <div class="project-meta-row">
+      <span class="pm-key">编号</span>
+      <span class="pm-val" style="color:${accent};">${project.id}</span>
+    </div>
+    <div class="project-meta-row" style="margin-top:4px; padding-top:10px; border-top:1px solid var(--border);">
+      <span class="pm-key">技术栈</span>
+    </div>
+    <div style="display:flex;flex-wrap:wrap;gap:5px;margin-top:4px;">
+      ${project.tech.map(t => `<span class="pi-tag">${t}</span>`).join('')}
+    </div>
+  `;
+
+  /* ── GitHub link ── */
+  document.getElementById('link-github').href = project.github || '#';
+
+  /* ── All projects mini list ── */
+  document.getElementById('all-projects-list').innerHTML = PROJECTS.map(p => `
+    <a href="project.html?id=${p.id}" style="
+      display:flex; align-items:center; gap:10px;
+      padding:7px 0; border-bottom:1px solid var(--border);
+      text-decoration:none; font-family:var(--font-mono); font-size:11px;
+      color:${p.id === project.id ? accent : 'var(--text-3)'};
+      transition: color .2s;
+    " onmouseover="this.style.color='${accent}'" onmouseout="this.style.color='${p.id === project.id ? accent : 'var(--text-3)'}'">
+      <span style="
+        width:24px; height:24px; border-radius:3px; flex-shrink:0;
+        background:linear-gradient(145deg,hsl(${p.hue},55%,10%),hsl(${p.hue},30%,6%));
+        display:flex; align-items:center; justify-content:center;
+        font-size:7px; letter-spacing:.02em; color:hsl(${p.hue},45%,40%);
+      ">${p.short}</span>
+      <span style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${p.name}</span>
+    </a>
+  `).join('');
+
+  /* ── Related articles (match by tech keywords) ── */
+  const techLower = project.tech.map(t => t.toLowerCase());
+  const related = ARTICLES.filter(a =>
+    a.tags.some(tag => techLower.some(t => tag.toLowerCase().includes(t) || t.includes(tag.toLowerCase())))
+  ).slice(0, 4);
+
+  const relatedSection = document.getElementById('related-section');
+  if (related.length === 0) {
+    relatedSection.style.display = 'none';
+  } else {
+    document.getElementById('related-list').innerHTML = related.map(a => `
+      <a class="project-related-item" href="article.html?slug=${a.slug}">
+        <div class="pri-cat">${a.category}</div>
+        <div class="pri-title">${a.title}</div>
+        <div class="pri-date">${formatDate(a.date)} · ${a.readingTime} min</div>
+      </a>
+    `).join('');
+  }
+
+  /* ── Prev / Next project nav ── */
+  const prev = idx > 0 ? PROJECTS[idx - 1] : null;
+  const next = idx < PROJECTS.length - 1 ? PROJECTS[idx + 1] : null;
+  document.getElementById('project-nav').innerHTML = `
+    ${prev ? `<a class="article-nav-btn" href="project.html?id=${prev.id}">
+      <div class="anb-dir">← 上一个</div>
+      <div class="anb-title">${prev.name}</div>
+    </a>` : '<div></div>'}
+    ${next ? `<a class="article-nav-btn article-nav-btn--next" href="project.html?id=${next.id}">
+      <div class="anb-dir">下一个 →</div>
+      <div class="anb-title">${next.name}</div>
+    </a>` : '<div></div>'}
+  `;
+
+  /* ── Mobile nav ── */
+  document.getElementById('nav-toggle').addEventListener('click', () => {
+    document.getElementById('nav-links').classList.toggle('open');
+  });
+</script>
+</body>
+</html>

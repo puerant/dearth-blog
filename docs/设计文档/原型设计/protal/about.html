@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>关于我 — dear·blog</title>
+  <link rel="stylesheet" href="assets/style.css" />
+</head>
+<body>
+
+<nav class="site-nav">
+  <div class="container">
+    <a href="index.html" class="site-title">
+      <span class="site-logo">
+        <span class="site-logo-text">DEAR</span><sup class="site-logo-sup">th</sup>
+      </span>
+    </a>
+    <ul class="nav-links" id="nav-links">
+      <li><a href="index.html">文章</a></li>
+      <li><a href="categories.html">分类</a></li>
+      <li><a href="tags.html">标签</a></li>
+      <li><a href="archives.html">归档</a></li>
+      <li><a href="series.html">系列</a></li>
+      <li><a href="about.html" class="active">关于</a></li>
+    </ul>
+    <div class="nav-toggle" id="nav-toggle"><span></span><span></span><span></span></div>
+  </div>
+</nav>
+
+<div class="page-body">
+  <div class="container">
+    <div class="about-layout" style="padding-top: 96px;">
+
+      <!-- Main Content -->
+      <main>
+        <!-- Avatar & Name -->
+        <div class="about-avatar-wrap" id="about-avatar"></div>
+        <h1 class="about-name" id="about-name"></h1>
+        <p class="about-tagline" id="about-tagline"></p>
+
+        <!-- 关于我 -->
+        <div class="about-section">
+          <p class="about-sec-title">关于我</p>
+          <div class="about-body">
+            <p>你好，我是林一，一名在北京工作的软件工程师，目前主要做 Java 后端开发，业余时间喜欢折腾前端。</p>
+            <p>写博客是我整理思路的方式。每次深入研究一个技术问题，把它写成一篇清晰的文章，往往比写代码本身花的时间更多——但也让我理解得更深。</p>
+            <p>除了写代码，我喜欢读书（每年大约二十本）、爬山、摄影，偶尔也会一个人去远处旅行。生活和技术对我来说并不割裂，它们都是理解这个世界的方式。</p>
+            <p>如果你读到了让你有共鸣的文章，或者有想探讨的话题，欢迎给我发邮件。</p>
+          </div>
+        </div>
+
+        <!-- 技术栈 -->
+        <div class="about-section">
+          <p class="about-sec-title">技术栈</p>
+          <div class="skills-chips" id="skills-chips"></div>
+        </div>
+
+        <!-- 写作方向 -->
+        <div class="about-section">
+          <p class="about-sec-title">写作方向</p>
+          <div class="about-body">
+            <p>这个博客大致分为几个方向：</p>
+            <p><strong>技术文章</strong>：以 Java 后端和前端 Vue 为主，记录工作中遇到的有意思的技术问题、解决方案，以及一些深入研究的主题。</p>
+            <p><strong>工具与工程化</strong>：开发工具、工程化配置、效率提升，对搭建好用的开发环境有执念。</p>
+            <p><strong>读书笔记</strong>：技术书和非技术书都读，会选择有话说的写成文章。</p>
+            <p><strong>生活随笔</strong>：旅行见闻、年度总结，代码之外的那些事。</p>
+          </div>
+        </div>
+      </main>
+
+      <!-- Sidebar -->
+      <aside class="about-sidebar">
+
+        <div class="about-fact-card">
+          <p class="afc-title">基本信息</p>
+          <div class="afc-rows" id="afc-basic"></div>
+        </div>
+
+        <div class="about-fact-card">
+          <p class="afc-title">联系方式</p>
+          <div class="afc-rows" id="afc-contact"></div>
+        </div>
+
+        <div class="about-fact-card">
+          <p class="afc-title">博客统计</p>
+          <div class="afc-rows" id="afc-stats"></div>
+        </div>
+
+      </aside>
+    </div>
+  </div>
+</div>
+
+<footer class="site-footer">
+  <div class="container">
+    <p class="footer-left">© <span id="footer-year"></span> dear·blog · 用心记录</p>
+    <div class="footer-links">
+      <a href="index.html">← 返回首页</a>
+      <a href="#" id="footer-github">GitHub</a>
+    </div>
+  </div>
+</footer>
+
+<script src="assets/data.js"></script>
+<script>
+  document.getElementById('footer-year').textContent = new Date().getFullYear();
+  document.getElementById('footer-github').href = SITE.github;
+
+  /* ── Avatar (initial letter) ── */
+  document.getElementById('about-avatar').textContent = SITE.author.charAt(0);
+  document.getElementById('about-name').textContent = SITE.author;
+  document.getElementById('about-tagline').textContent = SITE.bio;
+
+  /* ── Skills ── */
+  document.getElementById('skills-chips').innerHTML = SITE.skills.map(s =>
+    `<span class="skill-chip">${s}</span>`
+  ).join('');
+
+  /* ── Fact Cards ── */
+  document.getElementById('afc-basic').innerHTML = `
+    <div class="afc-row">
+      <span class="afc-row-label">所在</span>
+      <span class="afc-row-val">${SITE.location}</span>
+    </div>
+    <div class="afc-row">
+      <span class="afc-row-label">身份</span>
+      <span class="afc-row-val">软件工程师</span>
+    </div>
+    <div class="afc-row">
+      <span class="afc-row-label">方向</span>
+      <span class="afc-row-val">Java 后端 · 前端</span>
+    </div>
+    <div class="afc-row">
+      <span class="afc-row-label">建站</span>
+      <span class="afc-row-val">${SITE.since} 年</span>
+    </div>
+  `;
+
+  document.getElementById('afc-contact').innerHTML = `
+    <div class="afc-row">
+      <span class="afc-row-label">邮件</span>
+      <span class="afc-row-val"><a href="mailto:${SITE.email}">${SITE.email}</a></span>
+    </div>
+    <div class="afc-row">
+      <span class="afc-row-label">GitHub</span>
+      <span class="afc-row-val"><a href="${SITE.github}" target="_blank">@dearblog</a></span>
+    </div>
+  `;
+
+  const oldestDate = ARTICLES.reduce((min, a) => a.date < min ? a.date : min, ARTICLES[0].date);
+  document.getElementById('afc-stats').innerHTML = `
+    <div class="afc-row">
+      <span class="afc-row-label">文章</span>
+      <span class="afc-row-val">${totalArticles} 篇</span>
+    </div>
+    <div class="afc-row">
+      <span class="afc-row-label">分类</span>
+      <span class="afc-row-val">${totalCategories} 个</span>
+    </div>
+    <div class="afc-row">
+      <span class="afc-row-label">标签</span>
+      <span class="afc-row-val">${totalTags} 个</span>
+    </div>
+    <div class="afc-row">
+      <span class="afc-row-label">系列</span>
+      <span class="afc-row-val">${SERIES.length} 个</span>
+    </div>
+    <div class="afc-row">
+      <span class="afc-row-label">最早</span>
+      <span class="afc-row-val">${formatDate(oldestDate)}</span>
+    </div>
+  `;
+
+  document.getElementById('nav-toggle').addEventListener('click', () => {
+    document.getElementById('nav-links').classList.toggle('open');
+  });
+</script>
+</body>
+</html>

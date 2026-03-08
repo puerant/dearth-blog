@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>归档 — dear·blog</title>
+  <link rel="stylesheet" href="assets/style.css" />
+</head>
+<body>
+
+<nav class="site-nav">
+  <div class="container">
+    <a href="index.html" class="site-title">
+      <span class="site-logo">
+        <span class="site-logo-text">DEAR</span><sup class="site-logo-sup">th</sup>
+      </span>
+    </a>
+    <ul class="nav-links" id="nav-links">
+      <li><a href="index.html">文章</a></li>
+      <li><a href="categories.html">分类</a></li>
+      <li><a href="tags.html">标签</a></li>
+      <li><a href="archives.html" class="active">归档</a></li>
+      <li><a href="series.html">系列</a></li>
+      <li><a href="about.html">关于</a></li>
+    </ul>
+    <div class="nav-toggle" id="nav-toggle"><span></span><span></span><span></span></div>
+  </div>
+</nav>
+
+<div class="page-body">
+  <div class="container--narrow">
+
+    <div class="page-hd">
+      <span class="page-hd-eyebrow">// Archive</span>
+      <h1 class="page-hd-title">归档</h1>
+      <p class="page-hd-sub"><span id="arc-summary"></span></p>
+    </div>
+
+    <div id="archive-content"></div>
+
+  </div>
+</div>
+
+<footer class="site-footer">
+  <div class="container">
+    <p class="footer-left">© <span id="footer-year"></span> dear·blog</p>
+    <div class="footer-links">
+      <a href="index.html">← 返回首页</a>
+    </div>
+  </div>
+</footer>
+
+<script src="assets/data.js"></script>
+<script>
+  document.getElementById('footer-year').textContent = new Date().getFullYear();
+
+  const MONTH_NAMES = ['', '一月', '二月', '三月', '四月', '五月', '六月',
+                       '七月', '八月', '九月', '十月', '十一月', '十二月'];
+
+  /* ── Summary ── */
+  const sorted = [...ARTICLES].sort((a, b) => b.date.localeCompare(a.date));
+  document.getElementById('arc-summary').textContent = `共 ${sorted.length} 篇文章`;
+
+  /* ── Group by Year > Month ── */
+  const groups = groupByYear(sorted);
+  const years = Object.keys(groups).sort((a, b) => b - a);
+
+  let html = '';
+  years.forEach(year => {
+    const yearArticles = Object.values(groups[year]).flat();
+    html += `
+      <div class="archive-section">
+        <div class="archive-year-hd">
+          <span class="archive-year-num">${year}</span>
+          <span class="archive-year-count">${yearArticles.length} 篇</span>
+        </div>
+    `;
+
+    const months = Object.keys(groups[year]).sort((a, b) => b - a);
+    months.forEach(month => {
+      const monthArticles = groups[year][month];
+      html += `
+        <div class="archive-month-group">
+          <div class="archive-month-label">${MONTH_NAMES[parseInt(month)]}</div>
+          <div class="archive-entries">
+            ${monthArticles.map(a => `
+              <div class="archive-entry">
+                <span class="ae-day">${a.date.slice(8)}</span>
+                <a class="ae-title" href="article.html?slug=${a.slug}">${a.title}</a>
+                <span class="ae-cat">${a.category}</span>
+              </div>
+            `).join('')}
+          </div>
+        </div>
+      `;
+    });
+
+    html += `</div>`;
+  });
+
+  document.getElementById('archive-content').innerHTML = html;
+
+  document.getElementById('nav-toggle').addEventListener('click', () => {
+    document.getElementById('nav-links').classList.toggle('open');
+  });
+</script>
+</body>
+</html>

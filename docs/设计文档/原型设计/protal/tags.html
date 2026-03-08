@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>标签 — dear·blog</title>
+  <link rel="stylesheet" href="assets/style.css" />
+</head>
+<body>
+
+<nav class="site-nav">
+  <div class="container">
+    <a href="index.html" class="site-title">
+      <span class="site-logo">
+        <span class="site-logo-text">DEAR</span><sup class="site-logo-sup">th</sup>
+      </span>
+    </a>
+    <ul class="nav-links" id="nav-links">
+      <li><a href="index.html">文章</a></li>
+      <li><a href="categories.html">分类</a></li>
+      <li><a href="tags.html" class="active">标签</a></li>
+      <li><a href="archives.html">归档</a></li>
+      <li><a href="series.html">系列</a></li>
+      <li><a href="about.html">关于</a></li>
+    </ul>
+    <div class="nav-toggle" id="nav-toggle"><span></span><span></span><span></span></div>
+  </div>
+</nav>
+
+<div class="page-body">
+  <div class="container--narrow">
+
+    <div class="page-hd">
+      <span class="page-hd-eyebrow">// Tags</span>
+      <h1 class="page-hd-title">标签</h1>
+      <p class="page-hd-sub">共 <strong id="tag-total"></strong> 个标签，点击标签筛选文章</p>
+    </div>
+
+    <!-- Tag Cloud -->
+    <div class="tag-cloud-wrap" id="tag-cloud"></div>
+
+    <!-- Articles for selected tag -->
+    <div id="tag-result">
+      <div class="section-hd" style="padding-top: 0;">
+        <span class="section-label" id="tag-result-label">全部文章</span>
+        <span id="tag-result-count" style="font-size: 13px; color: var(--text-3);"></span>
+      </div>
+      <ul class="article-list" id="tag-articles"></ul>
+    </div>
+
+  </div>
+</div>
+
+<footer class="site-footer">
+  <div class="container">
+    <p class="footer-left">© <span id="footer-year"></span> dear·blog</p>
+    <div class="footer-links">
+      <a href="index.html">← 返回首页</a>
+    </div>
+  </div>
+</footer>
+
+<script src="assets/data.js"></script>
+<script>
+  document.getElementById('footer-year').textContent = new Date().getFullYear();
+  document.getElementById('tag-total').textContent = TAGS.length;
+
+  const params = new URLSearchParams(location.search);
+  let activeTag = params.get('tag') || null;
+
+  /* ── Tag Cloud ── */
+  const maxCount = Math.max(...TAGS.map(t => t.count));
+
+  document.getElementById('tag-cloud').innerHTML = TAGS
+    .sort((a, b) => b.count - a.count)
+    .map(tag => {
+      const size = 12 + (tag.count / maxCount) * 4;
+      return `
+        <button class="tag-cloud-btn ${activeTag === tag.name ? 'active' : ''}"
+                data-tag="${tag.name}" style="font-size: ${size}px;">
+          # ${tag.name}
+          <span class="tc-count">${tag.count}</span>
+        </button>
+      `;
+    }).join('');
+
+  /* ── Render Articles ── */
+  function renderTagArticles() {
+    const label = activeTag ? `# ${activeTag}` : '全部文章';
+    document.getElementById('tag-result-label').textContent = label;
+
+    const filtered = activeTag
+      ? ARTICLES.filter(a => a.tags.includes(activeTag))
+      : ARTICLES;
+
+    document.getElementById('tag-result-count').textContent = `${filtered.length} 篇`;
+
+    if (filtered.length === 0) {
+      document.getElementById('tag-articles').innerHTML = `
+        <div class="empty-state">
+          <div class="empty-state-icon">🏷️</div>
+          该标签暂无文章
+        </div>`;
+      return;
+    }
+
+    document.getElementById('tag-articles').innerHTML = filtered.map(a => `
+      <li class="article-item">
+        <a class="article-item-link" href="article.html?slug=${a.slug}">
+          <div class="a-meta">
+            <span class="a-date">${formatDate(a.date)}</span>
+            <span class="a-sep"></span>
+            <span class="a-cat">${a.category}</span>
+          </div>
+          <h2 class="a-title">${a.title}</h2>
+          <p class="a-excerpt">${a.excerpt}</p>
+          <div class="a-footer">
+            <div class="a-tags">
+              ${a.tags.map(t => `<span class="tag-pill ${activeTag === t ? 'tag-pill--active' : ''}"># ${t}</span>`).join('')}
+            </div>
+            <span class="a-read-time">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+              ${a.readingTime} 分钟
+            </span>
+          </div>
+        </a>
+      </li>
+    `).join('');
+  }
+
+  /* ── Tag Click ── */
+  document.getElementById('tag-cloud').addEventListener('click', e => {
+    const btn = e.target.closest('.tag-cloud-btn');
+    if (!btn) return;
+    const tag = btn.dataset.tag;
+
+    if (activeTag === tag) {
+      activeTag = null;
+    } else {
+      activeTag = tag;
+    }
+
+    document.querySelectorAll('.tag-cloud-btn').forEach(b => {
+      b.classList.toggle('active', b.dataset.tag === activeTag);
+    });
+
+    renderTagArticles();
+    history.replaceState(null, '', activeTag ? `?tag=${encodeURIComponent(activeTag)}` : '?');
+  });
+
+  /* Active tag on load highlight */
+  if (activeTag) {
+    document.querySelectorAll('.tag-cloud-btn').forEach(b => {
+      if (b.dataset.tag === activeTag) b.classList.add('active');
+    });
+  }
+
+  /* Active pill style */
+  const style = document.createElement('style');
+  style.textContent = `.tag-pill--active { background: var(--accent-bg); color: var(--accent); }`;
+  document.head.appendChild(style);
+
+  renderTagArticles();
+
+  document.getElementById('nav-toggle').addEventListener('click', () => {
+    document.getElementById('nav-links').classList.toggle('open');
+  });
+</script>
+</body>
+</html>

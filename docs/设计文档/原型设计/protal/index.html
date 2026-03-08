@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>dear·blog</title>
+  <link rel="stylesheet" href="assets/style.css" />
+</head>
+<body>
+
+<!-- ── Navigation ── -->
+<nav class="site-nav">
+  <div class="container">
+    <a href="index.html" class="site-title">
+      <span class="site-logo">
+        <span class="site-logo-text">DEAR</span><sup class="site-logo-sup">th</sup>
+      </span>
+    </a>
+    <ul class="nav-links" id="nav-links">
+      <li><a href="index.html" class="active">文章</a></li>
+      <li><a href="categories.html">分类</a></li>
+      <li><a href="tags.html">标签</a></li>
+      <li><a href="archives.html">归档</a></li>
+      <li><a href="series.html">系列</a></li>
+      <li><a href="about.html">关于</a></li>
+    </ul>
+    <div class="nav-toggle" id="nav-toggle"><span></span><span></span><span></span></div>
+  </div>
+</nav>
+
+<div class="page-body">
+
+  <!-- ── Hero ── -->
+  <section class="hero">
+    <!-- Corner metadata -->
+    <div class="hero-corners">
+      <div class="hero-corner-label">
+        个人博客
+        <span id="corner-since"></span>
+      </div>
+      <div class="hero-corner-label" style="text-align:right;">
+        <span id="corner-articles"></span>
+        <span id="corner-loc"></span>
+      </div>
+    </div>
+
+    <!-- Projects Clock (centered in hero) -->
+    <div class="clock-wrap" id="clock-wrap">
+      <svg class="clock-orbit" viewBox="0 0 400 400" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="200" cy="200" r="184" fill="none" stroke="rgba(255,255,255,0.045)" stroke-width="1" stroke-dasharray="3 7"/>
+      </svg>
+      <div class="clock-ring" id="clock-ring"></div>
+      <div class="clock-center" id="clock-center">
+        <div class="clock-logo">
+          <span class="clock-logo-text">PROJECT</span><sup class="clock-logo-sup">TM</sup>
+        </div>
+<!--        <span class="clock-hint">Project</span>-->
+      </div>
+    </div>
+    <!-- ── Project Info ── -->
+    <div class="project-info container--narrow">
+      <div class="pi-inner" id="pi-inner">
+        <div class="pi-left">
+          <div class="pi-id" id="pi-id"></div>
+          <div class="pi-name" id="pi-name"></div>
+          <p class="pi-desc" id="pi-desc"></p>
+        </div>
+        <div class="pi-right">
+          <div class="pi-tech" id="pi-tech"></div>
+          <div class="pi-meta">
+            <span class="pi-year" id="pi-year"></span>
+            <span class="pi-status" id="pi-status"></span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Display name -->
+    <div class="hero-display-wrap">
+      <p class="hero-display-sub" id="hero-bio-top"></p>
+      <h1 class="hero-display" id="hero-name"></h1>
+    </div>
+
+    <!-- Bottom bar -->
+    <div class="hero-bottom">
+      <div class="hero-stats" id="hero-stats"></div>
+      <span class="hero-scroll">向下探索</span>
+    </div>
+  </section>
+
+  <!-- ── Project Info ── -->
+  <div class="project-info container--narrow">
+    <div class="pi-inner" id="pi-inner" style="cursor:pointer;">
+      <div class="pi-left">
+        <div class="pi-id" id="pi-id"></div>
+        <div class="pi-name" id="pi-name"></div>
+        <p class="pi-desc" id="pi-desc"></p>
+      </div>
+      <div class="pi-right">
+        <div class="pi-tech" id="pi-tech"></div>
+        <div class="pi-meta">
+          <span class="pi-year" id="pi-year"></span>
+          <span class="pi-status" id="pi-status"></span>
+          <a id="pi-detail-link" href="project.html" style="
+            font-family:var(--font-mono);font-size:10px;letter-spacing:.08em;
+            color:var(--text-3);text-decoration:none;text-transform:uppercase;
+            transition:color .2s;
+          " onmouseover="this.style.color='var(--accent)'" onmouseout="this.style.color='var(--text-3)'">详情 →</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Featured ── -->
+  <section>
+    <div class="container--narrow">
+      <div class="section-hd">
+        <span class="section-label">// 精选文章</span>
+      </div>
+      <div class="featured-grid" id="featured-grid"></div>
+    </div>
+  </section>
+
+  <!-- ── Recent Articles ── -->
+  <section style="margin-top: 80px;">
+    <div class="container--narrow">
+      <div class="section-hd">
+        <span class="section-label">// 最新文章</span>
+        <a href="archives.html" class="section-more">全部归档</a>
+      </div>
+      <ul class="article-list article-list--indexed" id="article-list"></ul>
+    </div>
+  </section>
+
+</div>
+
+<!-- ── Footer ── -->
+<footer class="site-footer">
+  <div class="container">
+    <p class="footer-left">© <span id="footer-year"></span> <span id="footer-name"></span></p>
+    <div class="footer-links">
+      <a href="#" id="footer-github">GitHub</a>
+      <a href="#" id="footer-email">Email</a>
+      <a href="about.html">About</a>
+    </div>
+  </div>
+</footer>
+
+<script src="assets/data.js"></script>
+<script>
+  /* ── Fill site data ── */
+  document.getElementById('hero-name').textContent   = SITE.author;
+  document.getElementById('hero-bio-top').textContent = SITE.tagline;
+  document.getElementById('footer-year').textContent  = new Date().getFullYear();
+  document.getElementById('footer-name').textContent  = SITE.author;
+  document.getElementById('footer-github').href       = SITE.github;
+  document.getElementById('footer-email').href        = 'mailto:' + SITE.email;
+
+  document.getElementById('corner-since').textContent    = 'Since ' + SITE.since;
+  document.getElementById('corner-articles').textContent = totalArticles + ' 篇文章';
+  document.getElementById('corner-loc').textContent      = SITE.location;
+
+  document.getElementById('hero-stats').innerHTML = `
+    <div class="hero-stat">
+      <span class="hero-stat-val">${totalArticles}</span>
+      <span class="hero-stat-label">文章</span>
+    </div>
+    <div class="hero-stat">
+      <span class="hero-stat-val">${totalCategories}</span>
+      <span class="hero-stat-label">分类</span>
+    </div>
+    <div class="hero-stat">
+      <span class="hero-stat-val">${totalTags}</span>
+      <span class="hero-stat-label">标签</span>
+    </div>
+    <div class="hero-stat">
+      <span class="hero-stat-val">${SERIES.length}</span>
+      <span class="hero-stat-label">系列</span>
+    </div>
+  `;
+
+  /* ── Featured ── */
+  const featured = ARTICLES.filter(a => a.featured).slice(0, 3);
+  document.getElementById('featured-grid').innerHTML = featured.map(a => `
+    <a class="featured-card" href="article.html?slug=${a.slug}">
+      <span class="featured-badge">★ FEATURED</span>
+      <div class="fc-meta">${formatDate(a.date)} · ${a.category}</div>
+      <div class="fc-title">${a.title}</div>
+      <div class="fc-excerpt">${a.excerpt}</div>
+    </a>
+  `).join('');
+
+  /* ── Article List (numbered) ── */
+  document.getElementById('article-list').innerHTML = ARTICLES.slice(0, 9).map((a, i) => `
+    <li class="article-item">
+      <a class="article-item-link" href="article.html?slug=${a.slug}">
+        <div class="ai-num">${String(i + 1).padStart(2, '0')}</div>
+        <div class="ai-main">
+          <div class="a-meta">
+            <span class="a-date">${formatDate(a.date)}</span>
+            <span class="a-sep"></span>
+            <span class="a-cat">${a.category}</span>
+          </div>
+          <h2 class="a-title">${a.title}</h2>
+          <p class="a-excerpt">${a.excerpt}</p>
+        </div>
+        <div class="ai-right">
+          <div class="a-tags">
+            ${a.tags.slice(0, 2).map(t => `<span class="tag-pill">${t}</span>`).join('')}
+          </div>
+          <span class="a-read-time">${a.readingTime} min</span>
+        </div>
+      </a>
+    </li>
+  `).join('');
+
+  /* ── Mobile nav ── */
+  document.getElementById('nav-toggle').addEventListener('click', () => {
+    document.getElementById('nav-links').classList.toggle('open');
+  });
+
+  /* ══════════════════════════════════════════════════
+     PROJECTS CLOCK
+  ══════════════════════════════════════════════════ */
+  (function () {
+    const SNAP_SPEED    = 0.09;
+    const SCROLL_FACTOR = 0.22;
+
+    let currentAngle = 0;
+    let targetAngle  = 0;
+    let rafId        = null;
+    let isHovering   = false;
+
+    const ring   = document.getElementById('clock-ring');
+    const wrap   = document.getElementById('clock-wrap');
+    const center = document.getElementById('clock-center');
+    const n      = PROJECTS.length;
+    const STEP   = 360 / n;
+
+    /* Responsive sizing – read actual wrap size after render */
+    function getMetrics() {
+      const W = wrap.clientWidth;
+      return { W, RADIUS: W * 0.47 }; // matches SVG r/400 = 188/400
+    }
+
+    /* Card dimensions (must match CSS) */
+    const CARD_W = 41, CARD_H = 55;  /* was 58×78; scaled to 70% */
+
+    /* ── Build cards ── */
+    ring.innerHTML = PROJECTS.map((p, i) => `
+      <div class="clock-item" data-idx="${i}">
+        <div class="clock-card">
+          <div class="cc-img" style="background:linear-gradient(145deg,hsl(${p.hue},55%,10%),hsl(${p.hue},30%,5%));">
+            <span class="cc-bg-text" style="color:hsl(${p.hue},45%,18%);">${p.short}</span>
+            <span class="cc-id">${p.id}</span>
+          </div>
+          <div class="cc-label" style="border-top-color:hsl(${p.hue},30%,16%);">${p.name}</div>
+        </div>
+      </div>
+    `).join('');
+
+    const items = Array.from(ring.querySelectorAll('.clock-item'));
+
+    /* ── Layout: position items around ring ── */
+    function layout(angle) {
+      const { W, RADIUS } = getMetrics();
+      const cx = W / 2;
+      const cy = W / 2;
+      items.forEach((item, i) => {
+        const deg = i * STEP + angle;
+        const rad = deg * Math.PI / 180;
+        // subtract half card size so center of card lands on orbit position
+        const x   = cx + Math.sin(rad) * RADIUS - CARD_W / 2;
+        const y   = cy - Math.cos(rad) * RADIUS - CARD_H / 2;
+        item.style.transform = `translate(${x}px, ${y}px)`;
+      });
+    }
+
+    /* ── Find active card (closest to 12 o'clock) ── */
+    function getActiveIdx(angle) {
+      let best = 0, bestDist = Infinity;
+      items.forEach((_, i) => {
+        const deg  = ((i * STEP + angle) % 360 + 360) % 360;
+        const dist = Math.min(deg, 360 - deg);
+        if (dist < bestDist) { bestDist = dist; best = i; }
+      });
+      return best;
+    }
+
+    /* ── Card click → project detail ── */
+    items.forEach((item, i) => {
+      item.querySelector('.clock-card').addEventListener('click', () => {
+        window.location.href = 'project.html?id=' + PROJECTS[i].id;
+      });
+    });
+
+    /* ── Pi-inner click → project detail ── */
+    let activeProjectId = PROJECTS[0].id;
+    document.getElementById('pi-inner').addEventListener('click', () => {
+      window.location.href = 'project.html?id=' + activeProjectId;
+    });
+
+    /* ── Update project info panel ── */
+    let prevActiveIdx = -1;
+    function updateInfo(idx) {
+      if (idx === prevActiveIdx) return;
+      prevActiveIdx = idx;
+      const p = PROJECTS[idx];
+      activeProjectId = p.id;
+
+      /* update detail link */
+      const detailLink = document.getElementById('pi-detail-link');
+      if (detailLink) detailLink.href = 'project.html?id=' + p.id;
+
+      const inner = document.getElementById('pi-inner');
+      inner.classList.remove('pi-enter');
+      void inner.offsetWidth;
+      inner.classList.add('pi-enter');
+
+      document.getElementById('pi-id').textContent   = p.id;
+      document.getElementById('pi-name').textContent = p.name;
+      document.getElementById('pi-desc').textContent = p.desc;
+      document.getElementById('pi-year').textContent = p.year;
+
+      const statusEl = document.getElementById('pi-status');
+      statusEl.textContent = p.status;
+      statusEl.style.borderColor = p.status === 'Active' ? 'rgba(110,200,154,0.35)' :
+                                    p.status === 'WIP'    ? 'rgba(200,169,110,0.35)' :
+                                    'var(--border-2)';
+      statusEl.style.color = p.status === 'Active' ? '#6EC89A' :
+                              p.status === 'WIP'    ? 'var(--accent)' :
+                              'var(--text-3)';
+
+      document.getElementById('pi-tech').innerHTML =
+        p.tech.map(t => `<span class="pi-tag">${t}</span>`).join('');
+
+      items.forEach((item, i) => item.classList.toggle('active', i === idx));
+    }
+
+    /* ── Animation tick ── */
+    function tick() {
+      const diff = targetAngle - currentAngle;
+      currentAngle += diff * SNAP_SPEED;
+      layout(currentAngle);
+      updateInfo(getActiveIdx(currentAngle));
+      rafId = Math.abs(diff) > 0.05 ? requestAnimationFrame(tick) : null;
+    }
+
+    function startTick() {
+      if (!rafId) rafId = requestAnimationFrame(tick);
+    }
+
+    /* ── Events ── */
+    center.addEventListener('mouseenter', () => { isHovering = true;  });
+    center.addEventListener('mouseleave', () => { isHovering = false; });
+
+    wrap.addEventListener('wheel', (e) => {
+      if (!isHovering) return;
+      e.preventDefault();
+      targetAngle += e.deltaY * SCROLL_FACTOR;
+      startTick();
+    }, { passive: false });
+
+    /* Click center = advance one step */
+    center.addEventListener('click', () => {
+      targetAngle += STEP;
+      startTick();
+    });
+
+    /* ── Initial render ── */
+    layout(0);
+    updateInfo(0);
+  })();
+</script>
+</body>
+</html>

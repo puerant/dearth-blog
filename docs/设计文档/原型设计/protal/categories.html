@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>分类 — dear·blog</title>
+  <link rel="stylesheet" href="assets/style.css" />
+</head>
+<body>
+
+<nav class="site-nav">
+  <div class="container">
+    <a href="index.html" class="site-title">
+      <span class="site-logo">
+        <span class="site-logo-text">DEAR</span><sup class="site-logo-sup">th</sup>
+      </span>
+    </a>
+    <ul class="nav-links" id="nav-links">
+      <li><a href="index.html">文章</a></li>
+      <li><a href="categories.html" class="active">分类</a></li>
+      <li><a href="tags.html">标签</a></li>
+      <li><a href="archives.html">归档</a></li>
+      <li><a href="series.html">系列</a></li>
+      <li><a href="about.html">关于</a></li>
+    </ul>
+    <div class="nav-toggle" id="nav-toggle"><span></span><span></span><span></span></div>
+  </div>
+</nav>
+
+<div class="page-body">
+  <div class="container">
+
+    <div class="page-hd">
+      <span class="page-hd-eyebrow">// Categories</span>
+      <h1 class="page-hd-title">分类</h1>
+      <p class="page-hd-sub">按主题浏览所有文章</p>
+    </div>
+
+    <div class="cat-layout">
+
+      <!-- Sidebar: Category Tree -->
+      <aside class="cat-sidebar">
+        <p class="cat-sidebar-label">所有分类</p>
+        <ul class="cat-tree" id="cat-tree"></ul>
+      </aside>
+
+      <!-- Main: Article List -->
+      <main>
+        <div id="cat-header" style="margin-bottom: 28px;">
+          <h2 id="cat-title" style="font-family: var(--font-display); font-size: 20px; font-weight: 700; color: var(--text); letter-spacing: -0.02em;"></h2>
+          <p id="cat-count" style="font-size: 13px; color: var(--text-3); margin-top: 6px;"></p>
+        </div>
+        <ul class="article-list" id="cat-articles"></ul>
+      </main>
+
+    </div>
+  </div>
+</div>
+
+<footer class="site-footer">
+  <div class="container">
+    <p class="footer-left">© <span id="footer-year"></span> dear·blog</p>
+    <div class="footer-links">
+      <a href="index.html">← 返回首页</a>
+    </div>
+  </div>
+</footer>
+
+<script src="assets/data.js"></script>
+<script>
+  document.getElementById('footer-year').textContent = new Date().getFullYear();
+
+  const params = new URLSearchParams(location.search);
+  let activeSlug = params.get('slug') || CATEGORIES[0].slug;
+
+  /* ── Build Category Tree ── */
+  function renderCatTree() {
+    document.getElementById('cat-tree').innerHTML = CATEGORIES.map(cat => `
+      <li class="cat-tree-item">
+        <a class="cat-tree-link ${cat.slug === activeSlug ? 'active' : ''}"
+           href="#" data-slug="${cat.slug}" data-name="${cat.name}">
+          <span>${cat.name}</span>
+          <span class="cat-count">${cat.count}</span>
+        </a>
+        ${cat.children.length ? `
+        <ul class="cat-children">
+          ${cat.children.map(ch => `
+            <li class="cat-tree-item">
+              <a class="cat-tree-link ${ch.slug === activeSlug ? 'active' : ''}"
+                 href="#" data-slug="${ch.slug}" data-name="${cat.name + ' › ' + ch.name}">
+                <span>${ch.name}</span>
+                <span class="cat-count">${ch.count}</span>
+              </a>
+            </li>
+          `).join('')}
+        </ul>` : ''}
+      </li>
+    `).join('');
+
+    document.getElementById('cat-tree').querySelectorAll('.cat-tree-link').forEach(el => {
+      el.addEventListener('click', e => {
+        e.preventDefault();
+        activeSlug = el.dataset.slug;
+        document.querySelectorAll('.cat-tree-link').forEach(l => l.classList.remove('active'));
+        el.classList.add('active');
+        renderArticles();
+        history.replaceState(null, '', `?slug=${activeSlug}`);
+      });
+    });
+  }
+
+  /* ── Render Articles for Active Category ── */
+  function renderArticles() {
+    const cat = CATEGORIES.find(c => c.slug === activeSlug) ||
+                CATEGORIES.flatMap(c => c.children).find(c => c.slug === activeSlug);
+    const parentCat = CATEGORIES.find(c => c.slug === activeSlug) ||
+                      CATEGORIES.find(c => c.children.some(ch => ch.slug === activeSlug));
+
+    const articles = ARTICLES.filter(a => {
+      if (parentCat && parentCat.slug === activeSlug) return a.categorySlug === activeSlug;
+      return a.categorySlug === (parentCat?.slug || activeSlug);
+    });
+
+    const name = cat ? cat.name : (parentCat ? parentCat.name : '全部');
+    document.getElementById('cat-title').textContent = name;
+    document.getElementById('cat-count').textContent = `共 ${articles.length} 篇文章`;
+
+    if (articles.length === 0) {
+      document.getElementById('cat-articles').innerHTML = `
+        <div class="empty-state">
+          <div class="empty-state-icon">📂</div>
+          该分类暂无文章
+        </div>`;
+      return;
+    }
+
+    document.getElementById('cat-articles').innerHTML = articles.map(a => `
+      <li class="article-item">
+        <a class="article-item-link" href="article.html?slug=${a.slug}">
+          <div class="a-meta">
+            <span class="a-date">${formatDate(a.date)}</span>
+            <span class="a-sep"></span>
+            <span class="a-cat">${a.category}</span>
+          </div>
+          <h2 class="a-title">${a.title}</h2>
+          <p class="a-excerpt">${a.excerpt}</p>
+          <div class="a-footer">
+            <div class="a-tags">
+              ${a.tags.map(t => `<span class="tag-pill"># ${t}</span>`).join('')}
+            </div>
+            <span class="a-read-time">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+              ${a.readingTime} 分钟
+            </span>
+          </div>
+        </a>
+      </li>
+    `).join('');
+  }
+
+  renderCatTree();
+  renderArticles();
+
+  document.getElementById('nav-toggle').addEventListener('click', () => {
+    document.getElementById('nav-links').classList.toggle('open');
+  });
+</script>
+</body>
+</html>

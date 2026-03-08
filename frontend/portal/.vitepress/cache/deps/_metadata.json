@@ -1,0 +1,52 @@
+{
+  "hash": "9acc1d9a",
+  "configHash": "b0f853e7",
+  "lockfileHash": "c15990be",
+  "browserHash": "00710cdf",
+  "optimized": {
+    "vue": {
+      "src": "../../../node_modules/.pnpm/vue@3.5.29/node_modules/vue/dist/vue.runtime.esm-bundler.js",
+      "file": "vue.js",
+      "fileHash": "f8c16cd6",
+      "needsInterop": false
+    },
+    "vitepress > @vue/devtools-api": {
+      "src": "../../../node_modules/.pnpm/@vue+devtools-api@7.7.9/node_modules/@vue/devtools-api/dist/index.js",
+      "file": "vitepress___@vue_devtools-api.js",
+      "fileHash": "8a813f08",
+      "needsInterop": false
+    },
+    "vitepress > @vueuse/core": {
+      "src": "../../../node_modules/.pnpm/@vueuse+core@12.8.2/node_modules/@vueuse/core/index.mjs",
+      "file": "vitepress___@vueuse_core.js",
+      "fileHash": "0eb7510a",
+      "needsInterop": false
+    },
+    "pinia": {
+      "src": "../../../node_modules/.pnpm/pinia@2.3.1_vue@3.5.29/node_modules/pinia/dist/pinia.mjs",
+      "file": "pinia.js",
+      "fileHash": "f8a280da",
+      "needsInterop": false
+    },
+    "axios": {
+      "src": "../../../node_modules/.pnpm/axios@1.13.6/node_modules/axios/index.js",
+      "file": "axios.js",
+      "fileHash": "be5f7c8f",
+      "needsInterop": false
+    },
+    "markdown-it": {
+      "src": "../../../node_modules/.pnpm/markdown-it@14.1.1/node_modules/markdown-it/index.mjs",
+      "file": "markdown-it.js",
+      "fileHash": "ea57e8c9",
+      "needsInterop": false
+    }
+  },
+  "chunks": {
+    "chunk-BT4SRM55": {
+      "file": "chunk-BT4SRM55.js"
+    },
+    "chunk-PZ5AY32C": {
+      "file": "chunk-PZ5AY32C.js"
+    }
+  }
+}
