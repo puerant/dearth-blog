@@ -26,8 +26,8 @@ npm-debug.log*
 yarn-error.log*
 
 # ── VitePress / Vite ─────────────────────────────────────────────
-.vitepress/dist/
-.vitepress/cache/
+**/.vitepress/dist/
+**/.vitepress/cache/
 dist/
 .cache/
 
