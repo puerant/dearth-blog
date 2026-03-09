@@ -10,6 +10,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
@@ -51,6 +52,13 @@ public class AdminArticleController {
     public Result<ArticleDetailVO> update(@PathVariable Long id,
                                           @Valid @RequestBody ArticleSaveRequest req) {
         return Result.ok(articleService.update(id, req));
+    }
+
+    @Operation(summary = "更新文章状态")
+    @PutMapping("/{id}/status")
+    public Result<Void> updateStatus(@PathVariable Long id, @RequestBody Map<String, Integer> body) {
+        articleService.updateStatus(id, body.get("status"));
+        return Result.ok();
     }
 
     @Operation(summary = "删除文章")

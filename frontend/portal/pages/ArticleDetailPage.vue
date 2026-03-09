@@ -84,11 +84,13 @@ async function load(slug: string) {
 }
 
 onMounted(() => {
-  load(props.slug)
+  if (props.slug) load(props.slug)
   window.addEventListener('scroll', onScroll, { passive: true })
 })
 
-watch(() => props.slug, load)
+watch(() => props.slug, (newSlug) => {
+  if (newSlug) load(newSlug)
+})
 </script>
 
 <template>

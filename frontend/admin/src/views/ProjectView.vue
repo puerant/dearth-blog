@@ -117,7 +117,7 @@ function openDialog(row?: ProjectVO) {
   Object.assign(form, {
     projectNo: row?.projectNo ?? '', name: row?.name ?? '', shortName: row?.shortName ?? '',
     description: row?.description ?? '', techStack: [...(row?.techStack ?? [])],
-    highlights: [...(row?.highlights ?? [])], startYear: row?.startYear ?? new Date().getFullYear(),
+    highlights: [...(row?.highlights ?? [])], startYear: row?.startYear ? Number(row.startYear) : new Date().getFullYear(),
     status: row?.status ?? 'WIP', hue: row?.hue ?? 200, githubUrl: row?.githubUrl ?? '', sortOrder: row?.sortOrder ?? 0,
   })
   dialogVisible.value = true
@@ -128,7 +128,7 @@ async function handleSave() {
   if (!valid) return
   saving.value = true
   try {
-    if (editingId.value) { await updateProjectApi(editingId.value, form) } else { await createProjectApi(form) }
+    if (editingId.value) { await updateProjectApi(editingId.value, { ...form, startYear: String(form.startYear) }) } else { await createProjectApi({ ...form, startYear: String(form.startYear) }) }
     ElMessage.success('保存成功')
     dialogVisible.value = false
     fetchList()

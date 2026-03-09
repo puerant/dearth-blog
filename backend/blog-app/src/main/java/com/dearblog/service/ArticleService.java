@@ -136,6 +136,21 @@ public class ArticleService {
         return buildDetailVO(old);
     }
 
+    // ── Admin: 更新状态 ────────────────────────────────────────
+
+    @Transactional
+    public void updateStatus(Long id, Integer status) {
+        BlogArticle article = articleMapper.selectById(id);
+        if (article == null) throw new BusinessException(ResultCode.NOT_FOUND);
+        articleMapper.update(null, new LambdaUpdateWrapper<BlogArticle>()
+                .set(BlogArticle::getStatus, status)
+                .set(status == 2 && article.getPublishTime() == null,
+                        BlogArticle::getPublishTime, java.time.LocalDateTime.now())
+                .eq(BlogArticle::getId, id));
+        if (article.getCategoryId() != null) recalcCategoryCount(article.getCategoryId());
+        if (article.getSeriesId() != null) recalcSeriesCount(article.getSeriesId());
+    }
+
     // ── Admin: 删除 ───────────────────────────────────────────
 
     @Transactional

@@ -2,6 +2,11 @@ spring:
   application:
     name: dear-blog
 
+  # ── Jackson 日期序列化 ─────────────────────────────────────
+  jackson:
+    serialization:
+      write-dates-as-timestamps: false   # LocalDateTime → ISO 字符串，而非数组
+
   # ── 数据源 ────────────────────────────────────────────────
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver

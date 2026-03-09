@@ -24,7 +24,7 @@ public class ProjectSaveRequest {
 
     private List<String> highlights = new ArrayList<>();
 
-    private Integer startYear;
+    private String startYear;
 
     /** Active / Archive / WIP */
     private String status = "WIP";

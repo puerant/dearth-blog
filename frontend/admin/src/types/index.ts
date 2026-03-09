@@ -178,7 +178,7 @@ export interface ProjectVO {
   description: string
   techStack: string[]
   highlights: string[]
-  startYear: number
+  startYear: string
   status: string
   hue: number
   githubUrl: string
@@ -193,7 +193,7 @@ export interface ProjectSaveRequest {
   description?: string
   techStack?: string[]
   highlights?: string[]
-  startYear?: number
+  startYear?: string
   status?: string
   hue?: number
   githubUrl?: string
