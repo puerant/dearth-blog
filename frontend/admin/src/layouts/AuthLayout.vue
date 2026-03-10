@@ -33,6 +33,7 @@
 }
 
 .auth-logo h1 {
+  font-family: var(--app-font-logo);
   font-size: 28px;
   font-weight: 700;
   color: #1a1a1a;

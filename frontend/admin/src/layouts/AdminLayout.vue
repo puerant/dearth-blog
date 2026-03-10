@@ -157,6 +157,7 @@ async function handleCommand(command: string) {
 }
 
 .logo-text {
+  font-family: var(--app-font-logo);
   font-size: 18px;
   font-weight: 700;
   color: #fff;

@@ -106,7 +106,12 @@ onUnmounted(() => {
 </script>
 
 <template>
-  <div class="clock-wrap" ref="wrapRef">
+  <div
+    class="clock-wrap"
+    ref="wrapRef"
+    @mouseenter="isHovering = true"
+    @mouseleave="isHovering = false"
+  >
     <svg class="clock-orbit" viewBox="0 0 400 400" xmlns="http://www.w3.org/2000/svg">
       <circle cx="200" cy="200" r="184" fill="none" stroke="rgba(255,255,255,0.045)" stroke-width="1" stroke-dasharray="3 7"/>
     </svg>
@@ -132,8 +137,6 @@ onUnmounted(() => {
     <div
       class="clock-center"
       ref="centerRef"
-      @mouseenter="isHovering = true"
-      @mouseleave="isHovering = false"
       @click="onCenterClick"
     >
       <div class="clock-logo">
