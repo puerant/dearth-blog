@@ -8,6 +8,7 @@ import type {
   SeriesVO,
   SeriesDetailVO,
   ArchiveItemVO,
+  ProjectVO,
   PageResult
 } from '../types'
 
@@ -67,6 +68,16 @@ export const portalApi = {
   /** 时间归档 */
   getArchive(): Promise<ArchiveItemVO[]> {
     return request.get('/archive')
+  },
+
+  /** 项目列表 */
+  listProjects(): Promise<ProjectVO[]> {
+    return request.get('/projects')
+  },
+
+  /** 项目详情（按 projectNo） */
+  getProject(projectNo: string): Promise<ProjectVO> {
+    return request.get(`/projects/${projectNo}`)
   },
 
   /** 记录访问（静默） */

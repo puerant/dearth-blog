@@ -2,6 +2,7 @@ package com.dearblog.controller;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.dearblog.common.result.Result;
+import com.dearblog.dto.response.ProjectVO;
 import com.dearblog.dto.request.VisitRecordRequest;
 import com.dearblog.dto.response.portal.*;
 import com.dearblog.service.PortalService;
@@ -78,6 +79,20 @@ public class PortalController {
     @GetMapping("/series/{slug}")
     public Result<PortalSeriesVO> getSeries(@PathVariable String slug) {
         return Result.ok(portalService.getSeriesBySlug(slug));
+    }
+
+    // ── 项目 ──────────────────────────────────────────────────
+
+    @Operation(summary = "项目列表")
+    @GetMapping("/projects")
+    public Result<List<ProjectVO>> listProjects() {
+        return Result.ok(portalService.listProjects());
+    }
+
+    @Operation(summary = "项目详情")
+    @GetMapping("/projects/{projectNo}")
+    public Result<ProjectVO> getProject(@PathVariable String projectNo) {
+        return Result.ok(portalService.getProjectByNo(projectNo));
     }
 
     // ── 归档 ──────────────────────────────────────────────────

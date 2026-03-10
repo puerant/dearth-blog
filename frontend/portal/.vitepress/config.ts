@@ -17,7 +17,48 @@ export default defineConfig({
   vite: {
     plugins: [
       {
-        // Dev 模式下：将 /articles/<any-slug> 的 HTML 请求重写到已注册的占位路由
+        // Dev 模式下：将 /projects/<any-projectNo> 的 HTML 请求重写到占位路由
+        name: 'portal-project-dev-fallback',
+        configureServer(server) {
+          server.middlewares.use((req, _res, next) => {
+            if (req.url && /^\/projects\/[^/?#.]+(?:\/)?(?:\?.*)?$/.test(req.url)) {
+              req.url = '/projects/__init__'
+            }
+            next()
+          })
+        }
+      },
+      {
+        // Dev 模式下：VitePress 客户端 SPA 导航到 /projects/<real-no> 时
+        // 返回重导出 [projectNo].md 组件并注入正确 params 的虚拟模块
+        name: 'portal-project-virtual-no',
+        apply: 'serve',
+        resolveId(source: string) {
+          const path = source.split('?')[0]
+          const m = path.match(/^(?:\/)?projects\/([^/\[?#]+)\.md$/)
+          if (!m || m[1] === '__init__') return
+          return `\0vp-proj:${m[1]}`
+        },
+        load(id: string) {
+          if (!id.startsWith('\0vp-proj:')) return
+          const projectNo = id.slice('\0vp-proj:'.length)
+          const pageData = JSON.stringify({
+            title: '',
+            description: '',
+            frontmatter: { layout: false },
+            headers: [],
+            relativePath: `projects/${projectNo}.md`,
+            filePath: `projects/${projectNo}.md`,
+            params: { projectNo }
+          })
+          return [
+            `import Comp from '/projects/[projectNo].md'`,
+            `export default Comp`,
+            `export const __pageData = ${pageData}`,
+          ].join('\n')
+        }
+      },
+      {
         // 处理直接访问 / 刷新页面的场景
         name: 'portal-article-dev-fallback',
         configureServer(server) {

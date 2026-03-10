@@ -211,6 +211,19 @@ public class PortalService {
 
     // ── 归档 ──────────────────────────────────────────────────
 
+    public List<ProjectVO> listProjects() {
+        List<BlogProject> projects = projectMapper.selectList(
+                new LambdaQueryWrapper<BlogProject>().orderByAsc(BlogProject::getSortOrder));
+        return projects.stream().map(this::toProjectVO).collect(Collectors.toList());
+    }
+
+    public ProjectVO getProjectByNo(String projectNo) {
+        BlogProject p = projectMapper.selectOne(
+                new LambdaQueryWrapper<BlogProject>().eq(BlogProject::getProjectNo, projectNo));
+        if (p == null) throw new BusinessException(ResultCode.NOT_FOUND);
+        return toProjectVO(p);
+    }
+
     public List<PortalArchiveVO> listArchive() {
         List<BlogArticle> articles = articleMapper.selectList(
                 new LambdaQueryWrapper<BlogArticle>()
