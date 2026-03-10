@@ -1,5 +1,5 @@
-﻿<script setup lang="ts">
-import { computed, onMounted } from 'vue'
+<script setup lang="ts">
+import { computed, nextTick, onMounted, onUnmounted, ref } from 'vue'
 import { useSiteStore } from '../src/stores/site'
 import FeaturedCard from '../src/components/FeaturedCard.vue'
 import ArticleListItem from '../src/components/ArticleListItem.vue'
@@ -13,8 +13,116 @@ const featuredProject = computed(() => projects.value[0] ?? null)
 const projectList = computed(() => projects.value.slice(0, 6))
 const hasMoreProjects = computed(() => projects.value.length > 6)
 
+// ── TH Rain Animation ────────────────────────────────────────
+const thCanvas = ref<HTMLCanvasElement | null>(null)
+let animFrame = 0
+let drops: Drop[] = []
+let canvasW = 0
+let canvasH = 0
+
+interface Drop {
+  x: number; y: number; vy: number; vx: number
+  ry: number; rvy: number; rx: number; rvx: number
+  size: number; maxOpacity: number
+}
+
+function rand(a: number, b: number) { return a + Math.random() * (b - a) }
+
+function createDrop(w: number, h: number, startY?: number): Drop {
+  return {
+    x: rand(10, w - 10),
+    y: startY ?? rand(-h * 0.9, 0),
+    vy: rand(0.6, 1.8),
+    vx: rand(-0.15, 0.15),
+    ry: rand(0, Math.PI * 2),
+    rvy: rand(0.01, 0.034) * (Math.random() < 0.5 ? 1 : -1),
+    rx: rand(-0.28, 0.28),
+    rvx: rand(0.003, 0.012) * (Math.random() < 0.5 ? 1 : -1),
+    size: rand(11, 21),
+    maxOpacity: rand(0.14, 0.38),
+  }
+}
+
+function initCanvas() {
+  const canvas = thCanvas.value
+  if (!canvas) return
+  const el = canvas.parentElement!
+  canvasW = el.clientWidth
+  canvasH = el.clientHeight
+  canvas.width = canvasW
+  canvas.height = canvasH
+  const count = Math.floor(canvasW / 38) + 22
+  drops = Array.from({ length: count }, () => createDrop(canvasW, canvasH))
+}
+
+function animate() {
+  const canvas = thCanvas.value
+  if (!canvas) return
+  const ctx = canvas.getContext('2d')!
+  ctx.clearRect(0, 0, canvasW, canvasH)
+
+  const isDark = document.documentElement.getAttribute('data-theme') !== 'light'
+  const baseColor = isDark ? '255,255,255' : '20,20,20'
+  const fadeStart = canvasH * 0.36
+  const fadeEnd   = canvasH * 0.62
+
+  for (const d of drops) {
+    d.y  += d.vy;  d.x  += d.vx
+    d.ry += d.rvy; d.rx += d.rvx
+
+    if (d.y - d.size * 1.5 > canvasH) {
+      Object.assign(d, createDrop(canvasW, canvasH, -d.size * 2))
+      continue
+    }
+
+    let opacity = d.maxOpacity
+    if (d.y > fadeStart) {
+      const t = Math.min(1, (d.y - fadeStart) / (fadeEnd - fadeStart))
+      opacity *= (1 - t)
+    }
+    if (opacity < 0.005) continue
+
+    const cosY   = Math.cos(d.ry)
+    const scaleX = Math.abs(cosY)
+
+    ctx.save()
+    ctx.translate(d.x, d.y)
+    ctx.transform(scaleX, Math.sin(d.rx) * 0.1, 0, 1, 0, 0)
+    if (cosY < 0) ctx.scale(-1, 1)
+    ctx.globalAlpha = opacity
+    ctx.font = `700 ${d.size}px 'Syne', sans-serif`
+    ctx.fillStyle = `rgb(${baseColor})`
+    ctx.textAlign = 'center'
+    ctx.textBaseline = 'middle'
+    ctx.fillText('TH', 0, 0)
+    ctx.restore()
+  }
+
+  animFrame = requestAnimationFrame(animate)
+}
+
+let resizeTimer = 0
+function handleResize() {
+  clearTimeout(resizeTimer)
+  resizeTimer = window.setTimeout(() => {
+    cancelAnimationFrame(animFrame)
+    initCanvas()
+    animFrame = requestAnimationFrame(animate)
+  }, 150)
+}
+
 onMounted(async () => {
   await site.fetchConfig()
+  await nextTick()
+  initCanvas()
+  animFrame = requestAnimationFrame(animate)
+  window.addEventListener('resize', handleResize)
+})
+
+onUnmounted(() => {
+  cancelAnimationFrame(animFrame)
+  clearTimeout(resizeTimer)
+  window.removeEventListener('resize', handleResize)
 })
 
 function getStatusColor(project: ProjectVO) {
@@ -32,6 +140,8 @@ function getStatusColor(project: ProjectVO) {
 
     <!-- Hero -->
     <section class="hero">
+      <canvas ref="thCanvas" class="th-canvas" aria-hidden="true"></canvas>
+
       <div class="hero-corners">
         <div class="hero-corner-label">
           个人博客
@@ -168,6 +278,17 @@ function getStatusColor(project: ProjectVO) {
 </template>
 
 <style scoped>
+.hero { position: relative; overflow: hidden; }
+
+.th-canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 1;
+}
+
 .home-section { margin-top: 80px; }
 
 @media (max-width: 768px) {
